@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Cormorant, Jost } from "next/font/google";
+import { Cormorant, Jost, Geist } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
 import { NavLinks } from "./components/NavLinks";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const cormorant = Cormorant({
   variable: "--font-cormorant",
@@ -29,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${jost.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", cormorant.variable, jost.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col font-body">
         <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-background/80 border-b border-border/40">

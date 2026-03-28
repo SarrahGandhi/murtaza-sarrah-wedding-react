@@ -8,3 +8,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 Wedding is a minimal web app used for managing wedding invite for guests. It will also turn into an app for managing the wedding itself (coming soon)
 
 This repository is a VERY EARLY WIP. Proposing sweeping changes that improve long-term maintainability is encouraged.
+
+
+### Build Tooling
+This project is built using `pnpm` not `npm`

@@ -111,24 +111,24 @@ insert into public.events (name, date, location, dress_code, details)
 values
   (
     'Henna Night',
-    date '2026-06-18',
+    date '2026-10-20',
     'Rose Garden Hall',
     'Traditional attire',
     'Join the family for an intimate evening of henna, sweets, and music before the wedding day.'
   ),
   (
     'Nikah Ceremony',
-    date '2026-06-19',
+    date '2026-10-22',
     'Masjid Al Noor',
     'Formal modest wear',
     'Please arrive 30 minutes early for seating. Ceremony will be followed by light refreshments.'
   ),
   (
-    'Wedding Reception',
-    date '2026-06-19',
-    'Crescent Ballroom',
-    'Black tie optional',
-    'Dinner service begins at 7:30 PM followed by speeches, dessert, and dancing.'
+    'Ring Ceremony',
+    date '2026-10-21',
+    'Farmhouse Manor',
+    'Pastel colors',
+    'Full day event with food, ceremonial games and activities for all ages.'
   );
 
 -- Seed RSVP rows with a mix of accepted, declined, and pending responses.
@@ -250,87 +250,87 @@ values
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Amina Rahman'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Karim Rahman'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Sara Rahman'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Fatima Ali'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Omar Hassan'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Layla Hassan'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Huda Hassan'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Yusuf Khan'),
     'DECLINED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Samir Darwish'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Nadia Darwish'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Leena Darwish'),
     'PENDING'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Ibrahim Saeed'),
     'PENDING'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Zainab Rahman'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Adil Rahman'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Mariam Hassan'),
     'ACCEPTED'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Rayyan Ali'),
     'PENDING'
   ),
   (
-    (select id from public.events where name = 'Wedding Reception'),
+    (select id from public.events where name = 'Ring Ceremony'),
     (select id from public.guests where name = 'Noor Ali'),
     'ACCEPTED'
   );

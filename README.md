@@ -38,7 +38,7 @@ This spins up a local Supabase instance via Docker. Once running, it will print 
 Copy the output from `supabase start` and create a `.env.local` file:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54322
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-local-anon-key>
 ```
 

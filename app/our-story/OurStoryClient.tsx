@@ -84,14 +84,57 @@ const stories: Record<Narrator, StoryData> = {
     quoteAttribution: "Sarrah",
     chapters: [
       {
-        id: "lorem-ipsum",
-        year: "Coming Soon",
-        title: "Lorem Ipsum",
-        body: "To fill the emptiness.",
+        id: "first-meeting",
+        year: "2023",
+        title: "A Much-Needed Dinner",
+        body: "I had just moved to Canada, dealing with terrible roommates and feeling more homesick than I expected. Everything felt a little off — until his mom invited me over for dinner. That night, something shifted. For the first time since I arrived, I forgot all the stress. We just… talked. Mostly about food. He had some very questionable opinions, which I obviously judged — but somehow, it worked. It felt easy. Familiar. And I remember thinking 'okay, this is nice'",
       },
+      {
+        id: "halloween",
+        year: "October 2023",
+        title: "The “Just Friends” Date",
+        body: "Our first unofficial date was Halloween shopping. We didn’t buy a single thing. But we laughed the entire time, walked around aimlessly, and somehow it turned into one of those days you don’t want to end. I remember thinking how glad I was that my other date had cancelled. I genuinely wouldn’t have had it any other way.",
+      },
+      {
+        id: "first-long-distance",
+        year: "December 2023",
+        title: "A Week Apart",
+        body: "Then came a one-week trip to India for a wedding. It didn’t sound like a big deal… until it was. That was the first time I really missed him. And not in a dramatic way — just in a quiet, constant way. Talking to him never felt like effort, never felt like something I had to do. That’s when it clicked for me.",
+      },
+      {
+        id: "new-years",
+        year: "New Year's Eve",
+        title: "New Year’s, Finally",
+        body: "was late to the New Year’s party. Almost missed midnight. Very on-brand. But I made it just in time — my little Cinderella moment. And that’s when he finally asked me to be his girlfriend. (After missing several very obvious signals, I should add.) He dropped me home after… and then went to watch fireworks. Not his finest moment, but we’ve moved past it.",
+      },
+      {
+        id: "growing",
+        year: "2024",
+        title: "The Good Part",
+        body: "After that, everything just… flowed. The dates, the random plans, the trips — all of it was just fun. No pressure, no overthinking. I just loved spending time with him, doing absolutely anything (or nothing at all).",
+      },
+      {
+        id: "toronto",
+        year: "2025",
+        title: "Telling the Parents (Kind Of)",
+        body: "We eventually told our parents. By we, I mean he told them while I was asleep and had no idea it was happening. His intentions were pure, he just wanted me to spend the weekend with them. Execution? Slightly questionable.",
+      },
+      {
+        id: "india",
+        year: "Late 2025",
+        title: "Meeting Mine",
+        body: "Our first international trip together was to India, via Hong Kong — long flights, little sleep, and a lot of excitement. And then came the big moment: meeting my parents. Safe to say… they love him. Possibly more than me.",
+      },
+      {
+        id: "forever",
+        year: "2026",
+        title: "Forever Begins",
+        body: "Somewhere between that first dinner, random shopping trips, missed signals, long-distance calls, and completely unplanned moments... we built something real.Nothing about this was perfectly planned. Most of it just… happened And somehow, that made it exactly right. So here we are. Forever begins now.",
+      },
+
     ],
     closing:
-      "Her side of the story is still being written \u2014 check back soon.",
+      "Turns out, the best things aren’t planned. They just happen.",
   },
 };
 

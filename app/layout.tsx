@@ -38,7 +38,7 @@ export default function RootLayout({
               href="/"
               className="font-display text-xl font-semibold tracking-wide text-foreground hover:text-accent transition-colors"
             >
-              M&thinsp;&&thinsp;S
+              <img src="/logo.pngs" alt="Logo" className="h-10" />
             </Link>
             <NavLinks />
           </nav>

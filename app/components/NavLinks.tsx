@@ -20,11 +20,10 @@ export function NavLinks() {
           <Link
             key={href}
             href={href}
-            className={`text-xs sm:text-sm tracking-widest uppercase transition-colors ${
-              isActive
+            className={`text-xs sm:text-sm tracking-widest uppercase transition-colors ${isActive
                 ? "text-accent font-medium"
                 : "text-text-secondary hover:text-foreground"
-            }`}
+              }`}
           >
             {label}
           </Link>

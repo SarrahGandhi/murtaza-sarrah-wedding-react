@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const WEDDING_DATE = new Date("2026-10-20T00:00:00");
+const WEDDING_DATE = new Date("2026-10-22T00:00:00");
 
 interface TimeLeft {
   days: number;
@@ -25,10 +25,10 @@ function getTimeLeft(): TimeLeft {
 function Digit({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="font-display text-7xl sm:text-8xl md:text-[9rem] leading-none font-light text-foreground tabular-nums">
+      <span className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[9rem] leading-none font-light text-foreground tabular-nums">
         {String(value).padStart(2, "0")}
       </span>
-      <span className="text-[10px] sm:text-xs tracking-[0.35em] uppercase text-text-secondary mt-3 font-body">
+      <span className="text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.35em] uppercase text-text-secondary mt-2 sm:mt-3 font-body text-center">
         {label}
       </span>
     </div>
@@ -46,7 +46,7 @@ export function Countdown() {
 
   if (!time) {
     return (
-      <div className="flex items-center gap-6 sm:gap-10 md:gap-14">
+      <div className="flex items-center gap-2 sm:gap-6 md:gap-10 lg:gap-14">
         {["Days", "Hours", "Minutes", "Seconds"].map((label) => (
           <Digit key={label} value={0} label={label} />
         ))}
@@ -55,17 +55,17 @@ export function Countdown() {
   }
 
   return (
-    <div className="flex items-center gap-6 sm:gap-10 md:gap-14">
+    <div className="flex items-center gap-2 sm:gap-6 md:gap-10 lg:gap-14">
       <Digit value={time.days} label="Days" />
-      <span className="font-display text-5xl sm:text-6xl md:text-7xl text-muted font-light self-start mt-2 md:mt-4">
+      <span className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-muted font-light self-start mt-2 md:mt-4">
         :
       </span>
       <Digit value={time.hours} label="Hours" />
-      <span className="font-display text-5xl sm:text-6xl md:text-7xl text-muted font-light self-start mt-2 md:mt-4">
+      <span className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-muted font-light self-start mt-2 md:mt-4">
         :
       </span>
       <Digit value={time.minutes} label="Minutes" />
-      <span className="font-display text-5xl sm:text-6xl md:text-7xl text-muted font-light self-start mt-2 md:mt-4 hidden sm:block">
+      <span className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-muted font-light self-start mt-2 md:mt-4 hidden sm:block">
         :
       </span>
       <div className="hidden sm:flex flex-col items-center">

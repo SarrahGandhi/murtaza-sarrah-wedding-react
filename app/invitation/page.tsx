@@ -16,7 +16,7 @@ export default function InvitationPage() {
           <p className="text-xs tracking-[0.5em] uppercase text-accent font-body mb-6 animate-fade-in">
             You&apos;re invited
           </p>
-          <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-light text-foreground animate-fade-up delay-100">
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-light text-foreground animate-fade-up delay-100 leading-tight md:leading-none">
             Find Your Invitation
           </h1>
           <div className="mt-6 w-24 h-px bg-accent/40 mx-auto animate-draw-line delay-300" />

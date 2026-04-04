@@ -13,14 +13,14 @@ export function NavLinks() {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-8">
+    <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
       {links.map(({ href, label }) => {
         const isActive = pathname === href;
         return (
           <Link
             key={href}
             href={href}
-            className={`text-sm tracking-widest uppercase transition-colors ${
+            className={`text-xs sm:text-sm tracking-widest uppercase transition-colors ${
               isActive
                 ? "text-accent font-medium"
                 : "text-text-secondary hover:text-foreground"

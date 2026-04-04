@@ -106,55 +106,38 @@ function TimelineEntry({
   body: string;
   align: "left" | "right";
 }) {
+  const content = (isLeftAlignNode: boolean) => (
+    <>
+      <p className="text-xs tracking-[0.4em] uppercase text-accent font-body mb-2">{year}</p>
+      <h3 className="font-display text-2xl md:text-3xl font-light text-foreground mb-3 leading-snug">{title}</h3>
+      <p className={`text-sm md:text-base text-text-secondary leading-relaxed font-body max-w-sm ${isLeftAlignNode ? "ml-auto" : ""}`}>{body}</p>
+    </>
+  );
+
   return (
-    <div className="relative grid grid-cols-[1fr_auto_1fr] gap-6 md:gap-10 items-start">
-      <div
-        className={
-          align === "left"
-            ? "text-right"
-            : "text-right opacity-0 pointer-events-none"
-        }
-      >
-        {align === "left" && (
-          <>
-            <p className="text-xs tracking-[0.4em] uppercase text-accent font-body mb-2">
-              {year}
-            </p>
-            <h3 className="font-display text-2xl md:text-3xl font-light text-foreground mb-3 leading-snug">
-              {title}
-            </h3>
-            <p className="text-sm md:text-base text-text-secondary leading-relaxed font-body max-w-sm ml-auto">
-              {body}
-            </p>
-          </>
-        )}
+    <div className="relative flex gap-4 md:grid md:grid-cols-[1fr_auto_1fr] md:gap-10 items-start mb-10 md:mb-0 group">
+      {/* Mobile Line */}
+      <div className="flex flex-col items-center md:hidden pt-2 shrink-0">
+        <div className="w-2.5 h-2.5 rounded-full bg-accent/60 border-2 border-background ring-2 ring-accent/20" />
+        <div className="w-px flex-1 bg-border/60 min-h-full" />
       </div>
 
-      <div className="flex flex-col items-center">
-        <div className="w-2.5 h-2.5 rounded-full bg-accent/60 border-2 border-background ring-2 ring-accent/20" />
+      {/* Content for left column on desktop */}
+      <div className={`hidden md:block ${align === "left" ? "text-right" : "opacity-0 pointer-events-none"}`}>
+        {align === "left" && content(true)}
+      </div>
+
+      {/* Center line for desktop */}
+      <div className="hidden md:flex flex-col items-center pt-2 h-full">
+        <div className="w-2.5 h-2.5 shrink-0 rounded-full bg-accent/60 border-2 border-background ring-2 ring-accent/20" />
         <div className="w-px flex-1 bg-border/60 min-h-[80px]" />
       </div>
 
-      <div
-        className={
-          align === "right"
-            ? "text-left"
-            : "text-left opacity-0 pointer-events-none"
-        }
-      >
-        {align === "right" && (
-          <>
-            <p className="text-xs tracking-[0.4em] uppercase text-accent font-body mb-2">
-              {year}
-            </p>
-            <h3 className="font-display text-2xl md:text-3xl font-light text-foreground mb-3 leading-snug">
-              {title}
-            </h3>
-            <p className="text-sm md:text-base text-text-secondary leading-relaxed font-body max-w-sm">
-              {body}
-            </p>
-          </>
-        )}
+      {/* Content for mobile (always left aligned) AND right column on desktop */}
+      <div className={`pb-8 md:pb-0 ${align === "left" ? "md:opacity-0 md:pointer-events-none" : ""}`}>
+        <div className={align === "left" ? "md:hidden" : ""}>
+          {content(false)}
+        </div>
       </div>
     </div>
   );
@@ -181,21 +164,19 @@ export function OurStoryClient() {
           <div className="mt-8 flex items-center justify-center gap-1 bg-cream/60 p-1 rounded-full w-fit mx-auto">
             <button
               onClick={() => setNarrator("murtaza")}
-              className={`px-5 py-2 text-[11px] tracking-[0.25em] uppercase font-body rounded-full transition-all duration-300 cursor-pointer ${
-                narrator === "murtaza"
-                  ? "bg-foreground text-background shadow-sm"
-                  : "text-text-secondary hover:text-foreground"
-              }`}
+              className={`px-5 py-2 text-[11px] tracking-[0.25em] uppercase font-body rounded-full transition-all duration-300 cursor-pointer ${narrator === "murtaza"
+                ? "bg-foreground text-background shadow-sm"
+                : "text-text-secondary hover:text-foreground"
+                }`}
             >
               Murtaza
             </button>
             <button
               onClick={() => setNarrator("sarrah")}
-              className={`px-5 py-2 text-[11px] tracking-[0.25em] uppercase font-body rounded-full transition-all duration-300 cursor-pointer ${
-                narrator === "sarrah"
-                  ? "bg-foreground text-background shadow-sm"
-                  : "text-text-secondary hover:text-foreground"
-              }`}
+              className={`px-5 py-2 text-[11px] tracking-[0.25em] uppercase font-body rounded-full transition-all duration-300 cursor-pointer ${narrator === "sarrah"
+                ? "bg-foreground text-background shadow-sm"
+                : "text-text-secondary hover:text-foreground"
+                }`}
             >
               Sarrah
             </button>
@@ -253,7 +234,7 @@ export function OurStoryClient() {
           </p>
           <div className="mt-10 w-24 h-px bg-accent/40 mx-auto" />
           <p className="mt-10 text-sm tracking-[0.3em] uppercase text-accent font-body">
-            October 20, 2026
+            October 22, 2026
           </p>
         </div>
       </section>

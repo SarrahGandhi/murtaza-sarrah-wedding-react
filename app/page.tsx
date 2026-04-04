@@ -14,7 +14,7 @@ export default function Home() {
         <p className="text-xs tracking-[0.5em] uppercase text-text-secondary font-body mb-4">
           The wedding of
         </p>
-        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-light tracking-wide text-foreground">
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-light tracking-wide text-foreground leading-tight sm:leading-none">
           Murtaza <span className="text-accent font-light italic">&</span>{" "}
           Sarrah
         </h1>
@@ -28,7 +28,7 @@ export default function Home() {
       {/* Date & venue */}
       <div className="text-center animate-fade-up delay-400 mb-12">
         <p className="text-sm tracking-[0.3em] uppercase text-text-secondary font-body">
-          October Twentieth, Two Thousand Twenty Six
+          October Twenty Second, Two Thousand Twenty Six
         </p>
       </div>
 
@@ -41,7 +41,7 @@ export default function Home() {
       <div className="mt-16 flex flex-col items-center gap-4 animate-fade-up delay-700">
         <Link
           href="/invitation"
-          className="inline-block px-10 py-3.5 bg-foreground text-background text-xs tracking-[0.3em] uppercase font-body hover:bg-accent transition-colors duration-300"
+          className="inline-block px-10 py-3.5 bg-foreground text-background text-xs tracking-[0.3em] uppercase font-body hover:bg-accent transition-colors duration-300 text-center"
         >
           Find Your Invitation
         </Link>

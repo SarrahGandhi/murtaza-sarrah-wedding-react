@@ -93,7 +93,7 @@ const stories: Record<Narrator, StoryData> = {
         id: "halloween",
         year: "October 2023",
         title: "The “Just Friends” Date",
-        body: "Our first unofficial date was Halloween shopping. We didn’t buy a single thing. But we laughed the entire time, walked around aimlessly, and somehow it turned into one of those days you don’t want to end. I remember thinking how glad I was that my other date had cancelled. I genuinely wouldn’t have had it any other way.",
+        body: "Our first unofficial date was Halloween shopping. We didn’t buy a single thing. But we laughed the entire time, walked around aimlessly, and somehow it turned into one of those days you don’t want to end. I genuinely wouldn’t have had it any other way.",
       },
       {
         id: "first-long-distance",

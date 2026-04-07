@@ -26,8 +26,8 @@ const stories: Record<Narrator, StoryData> = {
     description:
       "From a bus stop pickup in Mississauga to wedding shopping across India — this is how it happened, from my side of things.",
     quote:
-      "She asked me what my favorite food was and I said chocolate biryani. She looked at me like I was insane. I knew right then.",
-    quoteAttribution: "Murtaza, probably",
+      "I said chocolate biryani. She said I was insane. Nothing about us was planned. Everything about us was right.",
+    quoteAttribution: "Murtaza",
     chapters: [
       {
         id: "first-meeting",
@@ -131,10 +131,8 @@ const stories: Record<Narrator, StoryData> = {
         title: "Forever Begins",
         body: "Somewhere between that first dinner, random shopping trips, missed signals, long-distance calls, and completely unplanned moments... we built something real.Nothing about this was perfectly planned. Most of it just… happened And somehow, that made it exactly right. So here we are. Forever begins now.",
       },
-
     ],
-    closing:
-      "Turns out, the best things aren’t planned. They just happen.",
+    closing: "Turns out, the best things aren’t planned. They just happen.",
   },
 };
 
@@ -151,9 +149,17 @@ function TimelineEntry({
 }) {
   const content = (isLeftAlignNode: boolean) => (
     <>
-      <p className="text-xs tracking-[0.4em] uppercase text-accent font-body mb-2">{year}</p>
-      <h3 className="font-display text-2xl md:text-3xl font-light text-foreground mb-3 leading-snug">{title}</h3>
-      <p className={`text-sm md:text-base text-text-secondary leading-relaxed font-body max-w-sm ${isLeftAlignNode ? "ml-auto" : ""}`}>{body}</p>
+      <p className="text-xs tracking-[0.4em] uppercase text-accent font-body mb-2">
+        {year}
+      </p>
+      <h3 className="font-display text-2xl md:text-3xl font-light text-foreground mb-3 leading-snug">
+        {title}
+      </h3>
+      <p
+        className={`text-sm md:text-base text-text-secondary leading-relaxed font-body max-w-sm ${isLeftAlignNode ? "ml-auto" : ""}`}
+      >
+        {body}
+      </p>
     </>
   );
 
@@ -166,7 +172,9 @@ function TimelineEntry({
       </div>
 
       {/* Content for left column on desktop */}
-      <div className={`hidden md:block ${align === "left" ? "text-right" : "opacity-0 pointer-events-none"}`}>
+      <div
+        className={`hidden md:block ${align === "left" ? "text-right" : "opacity-0 pointer-events-none"}`}
+      >
         {align === "left" && content(true)}
       </div>
 
@@ -177,7 +185,9 @@ function TimelineEntry({
       </div>
 
       {/* Content for mobile (always left aligned) AND right column on desktop */}
-      <div className={`pb-8 md:pb-0 ${align === "left" ? "md:opacity-0 md:pointer-events-none" : ""}`}>
+      <div
+        className={`pb-8 md:pb-0 ${align === "left" ? "md:opacity-0 md:pointer-events-none" : ""}`}
+      >
         <div className={align === "left" ? "md:hidden" : ""}>
           {content(false)}
         </div>
@@ -207,19 +217,21 @@ export function OurStoryClient() {
           <div className="mt-8 flex items-center justify-center gap-1 bg-cream/60 p-1 rounded-full w-fit mx-auto">
             <button
               onClick={() => setNarrator("murtaza")}
-              className={`px-5 py-2 text-[11px] tracking-[0.25em] uppercase font-body rounded-full transition-all duration-300 cursor-pointer ${narrator === "murtaza"
-                ? "bg-foreground text-background shadow-sm"
-                : "text-text-secondary hover:text-foreground"
-                }`}
+              className={`px-5 py-2 text-[11px] tracking-[0.25em] uppercase font-body rounded-full transition-all duration-300 cursor-pointer ${
+                narrator === "murtaza"
+                  ? "bg-foreground text-background shadow-sm"
+                  : "text-text-secondary hover:text-foreground"
+              }`}
             >
               Murtaza
             </button>
             <button
               onClick={() => setNarrator("sarrah")}
-              className={`px-5 py-2 text-[11px] tracking-[0.25em] uppercase font-body rounded-full transition-all duration-300 cursor-pointer ${narrator === "sarrah"
-                ? "bg-foreground text-background shadow-sm"
-                : "text-text-secondary hover:text-foreground"
-                }`}
+              className={`px-5 py-2 text-[11px] tracking-[0.25em] uppercase font-body rounded-full transition-all duration-300 cursor-pointer ${
+                narrator === "sarrah"
+                  ? "bg-foreground text-background shadow-sm"
+                  : "text-text-secondary hover:text-foreground"
+              }`}
             >
               Sarrah
             </button>

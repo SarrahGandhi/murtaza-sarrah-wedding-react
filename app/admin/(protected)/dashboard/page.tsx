@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { StatusDot } from "@/app/shared/StatusDot";
+import { StatusIcon } from "@/app/shared/StatusIcon";
 
 async function getCount(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -156,15 +156,15 @@ export default async function DashboardPage() {
                   </div>
                   <div className="flex items-baseline gap-5 text-[10px] tracking-[0.25em] uppercase font-body text-text-secondary tabular-nums">
                     <span>
-                      <StatusDot status="ACCEPTED" className="mr-2" />
+                      <StatusIcon status="ACCEPTED" className="mr-2" />
                       {tally.accepted} accepted
                     </span>
                     <span className={tally.pending > 0 ? "text-accent" : ""}>
-                      <StatusDot status="PENDING" className="mr-2" />
+                      <StatusIcon status="PENDING" className="mr-2" />
                       {tally.pending} pending
                     </span>
                     <span>
-                      <StatusDot status="DECLINED" className="mr-2" />
+                      <StatusIcon status="DECLINED" className="mr-2" />
                       {tally.declined} declined
                     </span>
                   </div>

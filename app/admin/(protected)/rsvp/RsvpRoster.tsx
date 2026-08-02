@@ -10,6 +10,7 @@ import {
   DEFAULT_FUZZINESS,
   FuzzinessControl,
 } from "@/app/shared/FuzzinessControl";
+import { StatusIcon } from "@/app/shared/StatusIcon";
 
 export type RosterEvent = {
   id: number;
@@ -28,6 +29,27 @@ export type RosterFamily = {
   label: string;
   guests: RosterGuest[];
 };
+
+const STATUS_FILTERS: { value: RsvpStatus; label: string }[] = [
+  { value: "PENDING", label: "Pending" },
+  { value: "ACCEPTED", label: "Accepted" },
+  { value: "DECLINED", label: "Declined" },
+];
+
+function filterByStatus(
+  families: RosterFamily[],
+  status: RsvpStatus | null,
+): RosterFamily[] {
+  if (status === null) return families;
+  return families
+    .map((family) => ({
+      ...family,
+      guests: family.guests.filter((guest) =>
+        Object.values(guest.statusByEvent).includes(status),
+      ),
+    }))
+    .filter((family) => family.guests.length > 0);
+}
 
 const searchOptions: IFuseOptions<RosterFamily> = {
   ignoreLocation: true,
@@ -132,18 +154,15 @@ export function RsvpRoster({
 }) {
   const [search, setSearch] = useState("");
   const [fuzziness, setFuzziness] = useState(DEFAULT_FUZZINESS);
+  const [statusFilter, setStatusFilter] = useState<RsvpStatus | null>(null);
 
-  const visibleBride = useFuzzyFilter(
-    brideFamilies,
-    search,
-    searchOptions,
-    fuzziness,
+  const visibleBride = filterByStatus(
+    useFuzzyFilter(brideFamilies, search, searchOptions, fuzziness),
+    statusFilter,
   );
-  const visibleGroom = useFuzzyFilter(
-    groomFamilies,
-    search,
-    searchOptions,
-    fuzziness,
+  const visibleGroom = filterByStatus(
+    useFuzzyFilter(groomFamilies, search, searchOptions, fuzziness),
+    statusFilter,
   );
   const noResults = visibleBride.length === 0 && visibleGroom.length === 0;
 
@@ -163,12 +182,42 @@ export function RsvpRoster({
           />
         </label>
         <FuzzinessControl value={fuzziness} onChange={setFuzziness} />
+        <div>
+          <span className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-1 block">
+            Filter by status
+          </span>
+          <div
+            role="group"
+            aria-label="Filter guests by RSVP status"
+            className="flex flex-wrap gap-2"
+          >
+            {STATUS_FILTERS.map((opt) => {
+              const active = statusFilter === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setStatusFilter(active ? null : opt.value)}
+                  className={`inline-flex items-center gap-2 border px-3 py-1.5 text-[10px] tracking-[0.25em] uppercase font-body transition-colors cursor-pointer ${
+                    active
+                      ? "border-foreground bg-cream text-foreground"
+                      : "border-border/60 bg-warm-white text-text-secondary hover:border-foreground/40 hover:text-foreground"
+                  }`}
+                >
+                  <StatusIcon status={opt.value} />
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {noResults ? (
         <p className="text-sm text-muted italic font-body">
-          {search
-            ? `No guests or families match “${search}”`
+          {search || statusFilter
+            ? "No guests or families match the current search and status filter."
             : "No families yet — add them from the Roster chapter first."}
         </p>
       ) : (

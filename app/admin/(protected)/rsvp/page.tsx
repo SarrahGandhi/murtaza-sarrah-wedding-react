@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import type { GuestSide, RsvpStatus } from "@/lib/types";
 import { PageHeader } from "@/app/shared/PageHeader";
-import { StatusDot } from "@/app/shared/StatusDot";
+import { StatusIcon } from "@/app/shared/StatusIcon";
 import {
   RsvpRoster,
   type RosterFamily,
@@ -104,15 +104,15 @@ export default async function RsvpPage() {
         meta={
           <div className="flex items-center gap-6 tracking-[0.3em]">
             <span>
-              <StatusDot status="ACCEPTED" className="mr-2" />
+              <StatusIcon status="ACCEPTED" className="mr-2" />
               {totals.accepted} accepted
             </span>
             <span>
-              <StatusDot status="PENDING" className="mr-2" />
+              <StatusIcon status="PENDING" className="mr-2" />
               {totals.pending} pending
             </span>
             <span>
-              <StatusDot status="DECLINED" className="mr-2" />
+              <StatusIcon status="DECLINED" className="mr-2" />
               {totals.declined} declined
             </span>
           </div>

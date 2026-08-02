@@ -9,7 +9,7 @@ import {
 } from "./actions";
 import type { RsvpStatus } from "@/lib/types";
 import { useServerAction } from "@/app/shared/useServerAction";
-import { StatusDot } from "@/app/shared/StatusDot";
+import { StatusIcon } from "@/app/shared/StatusIcon";
 import { ErrorMessage } from "@/app/shared/ErrorMessage";
 
 const STATUS_OPTIONS: { value: RsvpStatus; label: string }[] = [
@@ -98,7 +98,7 @@ export function InviteCheckbox({
             title={`${status?.charAt(0)}${status?.slice(1).toLowerCase()} — click to change`}
             className="inline-flex items-center justify-center w-4 h-4 cursor-pointer hover:scale-125 transition-transform"
           >
-            <StatusDot status={status ?? "PENDING"} />
+            <StatusIcon status={status ?? "PENDING"} />
           </button>
           {menuOpen && (
             <>
@@ -123,7 +123,7 @@ export function InviteCheckbox({
                         : "text-text-secondary"
                     }`}
                   >
-                    <StatusDot status={opt.value} />
+                    <StatusIcon status={opt.value} />
                     {opt.label}
                   </button>
                 ))}

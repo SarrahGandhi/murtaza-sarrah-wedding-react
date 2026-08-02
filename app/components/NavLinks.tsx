@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { SITE_FEATURES } from "@/lib/site-features";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/our-story", label: "Our Story" },
-  { href: "/gallery", label: "Gallery" },
+  ...(SITE_FEATURES.gallery
+    ? [{ href: "/gallery", label: "Gallery" }]
+    : []),
   { href: "/invitation", label: "RSVP" },
 ];
 

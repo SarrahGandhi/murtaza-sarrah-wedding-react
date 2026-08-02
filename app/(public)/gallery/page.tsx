@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Camera } from "lucide-react";
+import { SITE_FEATURES } from "@/lib/site-features";
 
 export const metadata: Metadata = {
   title: "Gallery — Murtaza & Sarrah",
@@ -256,6 +258,10 @@ function PhotoCard({ photo, index }: { photo: Photo; index: number }) {
 }
 
 export default function GalleryPage() {
+  if (!SITE_FEATURES.gallery) {
+    notFound();
+  }
+
   return (
     /* -mt-24 cancels the layout's pt-24 so the pastel backdrop runs
        underneath the floating nav to the top of the viewport */

@@ -71,7 +71,6 @@ export function FamilySection({
   return (
     <article
       id={`family-${family.id}`}
-      data-family-id={family.id}
       className={`border-t border-border/40 py-8 ${pending ? "opacity-60" : ""}`}
     >
       {/* Family heading */}

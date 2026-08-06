@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Plus } from "lucide-react";
 import {
   AddFamilyForm,
@@ -27,6 +28,8 @@ export function GuestsWorkspace({
   const [search, setSearch] = useState("");
   const [sideFilter, setSideFilter] = useState<SideFilter>("ALL");
   const [openFamilyIds, setOpenFamilyIds] = useState<Set<number>>(new Set());
+  // Only ever set from the IntersectionObserver callback, so a truthy value
+  // also guarantees we are client-side and `document.body` exists.
   const [showFab, setShowFab] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const rosterRef = useRef<HTMLDivElement>(null);
@@ -127,16 +130,21 @@ export function GuestsWorkspace({
         )}
       </div>
 
-      {showFab && (
-        <button
-          type="button"
-          onClick={openFormFromFab}
-          className="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-5 py-3 bg-foreground text-background text-[10px] tracking-[0.3em] uppercase font-body shadow-lg hover:bg-accent transition-colors cursor-pointer"
-        >
-          <Plus size={14} strokeWidth={1.5} />
-          New family
-        </button>
-      )}
+      {/* Portalled to <body>: the page's `.animate-fade-up` wrapper keeps a
+          transform (fill-mode `both`), which would otherwise make it the
+          containing block for this fixed button and strand it at page bottom. */}
+      {showFab &&
+        createPortal(
+          <button
+            type="button"
+            onClick={openFormFromFab}
+            className="fixed bottom-8 right-8 z-50 flex items-center gap-2 px-5 py-3 bg-foreground text-background text-[10px] tracking-[0.3em] uppercase font-body shadow-lg hover:bg-accent transition-colors cursor-pointer"
+          >
+            <Plus size={14} strokeWidth={1.5} />
+            New family
+          </button>,
+          document.body,
+        )}
     </>
   );
 }

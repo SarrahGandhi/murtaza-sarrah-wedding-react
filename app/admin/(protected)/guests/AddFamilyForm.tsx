@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import { ArrowRight } from "lucide-react";
 import { createFamily } from "./actions";
 import { FormField, SelectField } from "@/app/shared/FormField";
 import { Button } from "@/app/shared/Button";
@@ -183,27 +184,41 @@ export function CreatedFamilyLinks({
 }) {
   if (created.length === 0) return null;
   return (
-    <div className="mt-6 pt-5 border-t border-border/40">
-      <p className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-3">
+    <div className="mt-8 pt-6 border-t border-border/40">
+      <p className="text-[10px] tracking-[0.4em] uppercase text-accent font-body mb-2">
         Created this session
+      </p>
+      <div className="w-10 h-px bg-accent/40 mb-3" />
+      <p className="text-xs text-text-secondary font-body italic mb-4 leading-relaxed">
+        Click any family below to filter the roster down to just that one. This
+        list keeps growing as you add families and only clears on refresh.
       </p>
       <ul className="space-y-2">
         {created.map((family) => (
-          <li key={family.id} className="flex items-baseline gap-3 flex-wrap">
-            <span className="text-accent font-body text-sm">✓</span>
+          <li key={family.id}>
             <button
               type="button"
               onClick={() => onJump(family.id)}
-              className="font-body text-sm text-foreground hover:text-accent underline underline-offset-4 decoration-border transition-colors cursor-pointer text-left"
+              className="group w-full flex items-center gap-x-4 gap-y-2 flex-wrap border border-border/60 bg-warm-white px-4 py-3.5 text-left hover:border-accent hover:bg-accent/5 transition-colors cursor-pointer"
             >
-              {family.label}
+              <span className="font-body text-sm text-foreground group-hover:text-accent transition-colors">
+                {family.label}
+              </span>
+              <span className="text-[10px] tracking-[0.3em] uppercase text-muted font-body">
+                {family.side === "BRIDE" ? "Bride's side" : "Groom's side"}
+              </span>
+              <span className="text-[10px] tracking-[0.3em] uppercase text-muted font-body tabular-nums">
+                #{family.id}
+              </span>
+              <span className="ml-auto flex items-center gap-1.5 text-[10px] tracking-[0.3em] uppercase font-body text-text-secondary group-hover:text-accent transition-colors">
+                Jump to it
+                <ArrowRight
+                  size={13}
+                  strokeWidth={1.5}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
+              </span>
             </button>
-            <span className="text-[10px] tracking-[0.3em] uppercase text-muted font-body">
-              {family.side === "BRIDE" ? "Bride's side" : "Groom's side"}
-            </span>
-            <span className="text-[10px] tracking-[0.3em] uppercase text-muted font-body tabular-nums">
-              #{family.id}
-            </span>
           </li>
         ))}
       </ul>

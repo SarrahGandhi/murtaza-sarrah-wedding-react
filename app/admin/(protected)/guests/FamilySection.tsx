@@ -59,12 +59,15 @@ export function FamilySection({
 
   function onDeleteFamily(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (
-      !confirm(
-        `Delete family "${label}"? This cannot be undone. Guests linked to it must be moved or deleted first.`,
-      )
-    )
+    // A guest cannot exist without a family, so the database refuses this too —
+    // say why here rather than spending a round trip to be told no.
+    if (guests.length > 0) {
+      remove.setError(
+        `"${label}" still has ${guests.length} ${guests.length === 1 ? "guest" : "guests"}. Delete them first.`,
+      );
       return;
+    }
+    if (!confirm(`Delete family "${label}"? This cannot be undone.`)) return;
     remove.run(new FormData(e.currentTarget));
   }
 
@@ -277,12 +280,15 @@ export function FamilySection({
             </Button>
           </form>
 
-          {error && (
-            <ErrorMessage variant="inline" className="mt-3">
-              {error}
-            </ErrorMessage>
-          )}
         </div>
+      )}
+
+      {/* Outside the `expanded` block: Delete is reachable while collapsed, so
+          its error has to be too. */}
+      {error && (
+        <ErrorMessage variant="inline" className="mt-3">
+          {error}
+        </ErrorMessage>
       )}
     </article>
   );

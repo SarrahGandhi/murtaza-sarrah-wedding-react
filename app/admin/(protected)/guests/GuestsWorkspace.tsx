@@ -130,9 +130,14 @@ export function GuestsWorkspace({
         )}
       </div>
 
-      {/* Portalled to <body>: the page's `.animate-fade-up` wrapper keeps a
+      {/* Portalled out of the page: the `.animate-fade-up` wrapper keeps a
           transform (fill-mode `both`), which would otherwise make it the
-          containing block for this fixed button and strand it at page bottom. */}
+          containing block for this fixed button and strand it at page bottom.
+          The target is the admin shell rather than <body> — the shell is an
+          opaque `fixed inset-0 z-[100]` layer, so a body-level portal would
+          render correctly but sit underneath it. Being `fixed` (no transform),
+          the shell is not a containing block for the button, which therefore
+          stays pinned to the viewport as the shell scrolls. */}
       {showFab &&
         createPortal(
           <button
@@ -143,7 +148,7 @@ export function GuestsWorkspace({
             <Plus size={14} strokeWidth={1.5} />
             New family
           </button>,
-          document.body,
+          document.getElementById("admin-shell") ?? document.body,
         )}
     </>
   );

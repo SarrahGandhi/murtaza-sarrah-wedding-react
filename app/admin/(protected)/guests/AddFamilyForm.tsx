@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition, type Ref } from "react";
 import { ArrowRight } from "lucide-react";
 import { createFamily } from "./actions";
 import { FormField, SelectField } from "@/app/shared/FormField";
@@ -178,14 +178,23 @@ export function AddFamilyForm({
 export function CreatedFamilyLinks({
   created,
   onJump,
+  headingRef,
 }: {
   created: CreatedFamily[];
   onJump: (id: number) => void;
+  // The workspace centres this after a create. It sits on the heading rather
+  // than the wrapper because the list grows past a phone viewport after a few
+  // families, and centring a box taller than the screen pushes its top — where
+  // the newest family is prepended — back out of view.
+  headingRef?: Ref<HTMLParagraphElement>;
 }) {
   if (created.length === 0) return null;
   return (
     <div className="mt-8 pt-6 border-t border-border/40">
-      <p className="text-[10px] tracking-[0.4em] uppercase text-accent font-body mb-2">
+      <p
+        ref={headingRef}
+        className="text-[10px] tracking-[0.4em] uppercase text-accent font-body mb-2"
+      >
         Created this session
       </p>
       <div className="w-10 h-px bg-accent/40 mb-3" />

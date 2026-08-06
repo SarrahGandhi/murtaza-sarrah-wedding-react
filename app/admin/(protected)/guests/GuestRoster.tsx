@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState, type Dispatch, type Ref, type SetStateAction } from "react";
 import type { IFuseOptions } from "fuse.js";
 import { FamilySection } from "./FamilySection";
 import type { GuestCategory, GuestSide } from "@/lib/types";
@@ -60,6 +60,7 @@ export function GuestRoster({
   groomFamilies,
   search,
   onSearchChange,
+  searchRef,
   sideFilter,
   onSideFilterChange,
   openFamilyIds,
@@ -69,6 +70,9 @@ export function GuestRoster({
   groomFamilies: FamilyWithGuests[];
   search: string;
   onSearchChange: (search: string) => void;
+  // The workspace scrolls to this after a "Jump to it", so the filtered-down
+  // search and its lone result land together on small screens.
+  searchRef?: Ref<HTMLLabelElement>;
   sideFilter: SideFilter;
   onSideFilterChange: (filter: SideFilter) => void;
   openFamilyIds: Set<number>;
@@ -173,7 +177,7 @@ export function GuestRoster({
             </div>
           ))}
         </div>
-        <label className="block">
+        <label ref={searchRef} className="block">
           <span className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-1 block">
             Search families
           </span>

@@ -33,8 +33,25 @@ export function GuestsWorkspace({
   const [showFab, setShowFab] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const rosterRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLLabelElement>(null);
+  const createdRef = useRef<HTMLParagraphElement>(null);
 
   const isEmpty = brideFamilies.length === 0 && groomFamilies.length === 0;
+  const createdCount = created.length;
+
+  // Centred rather than top-aligned: on a short viewport the thing being
+  // scrolled to is the point, and `start` leaves it flush against the top edge
+  // where it reads as "the page just moved", not "look here".
+  function centerInView(el: HTMLElement | null) {
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  // Creating a family adds a row to the "Created this session" list, which on
+  // small screens lands below the fold — the form looked like it did nothing.
+  useEffect(() => {
+    if (createdCount === 0) return;
+    centerInView(createdRef.current);
+  }, [createdCount]);
 
   // The floating button only earns its place once the form is off-screen.
   useEffect(() => {
@@ -59,14 +76,11 @@ export function GuestsWorkspace({
     // An opposing side filter would otherwise swallow the jump entirely.
     setSideFilter("ALL");
     setOpenFamilyIds((current) => new Set(current).add(id));
-    // The lone result sits right below the form, so only nudge if it is
-    // actually out of view — no full-page travel.
+    // Always travel, even if the roster is already partly on screen: the search
+    // box is what proves the jump happened ("Exact match · family #42"), and the
+    // lone result sits directly under it. Centring the box puts both in view.
     requestAnimationFrame(() => {
-      const roster = rosterRef.current;
-      if (!roster) return;
-      const { top } = roster.getBoundingClientRect();
-      if (top < 0 || top > window.innerHeight)
-        roster.scrollIntoView({ behavior: "smooth", block: "start" });
+      centerInView(searchRef.current ?? rosterRef.current);
     });
   }
 
@@ -108,7 +122,11 @@ export function GuestsWorkspace({
             focusNonce={focusNonce}
           />
         </div>
-        <CreatedFamilyLinks created={created} onJump={jumpToFamily} />
+        <CreatedFamilyLinks
+          created={created}
+          onJump={jumpToFamily}
+          headingRef={createdRef}
+        />
       </section>
 
       <div ref={rosterRef}>
@@ -122,6 +140,7 @@ export function GuestsWorkspace({
             groomFamilies={groomFamilies}
             search={search}
             onSearchChange={setSearch}
+            searchRef={searchRef}
             sideFilter={sideFilter}
             onSideFilterChange={setSideFilter}
             openFamilyIds={openFamilyIds}
@@ -130,9 +149,14 @@ export function GuestsWorkspace({
         )}
       </div>
 
-      {/* Portalled to <body>: the page's `.animate-fade-up` wrapper keeps a
+      {/* Portalled out of the page: the `.animate-fade-up` wrapper keeps a
           transform (fill-mode `both`), which would otherwise make it the
-          containing block for this fixed button and strand it at page bottom. */}
+          containing block for this fixed button and strand it at page bottom.
+          The target is the admin shell rather than <body> — the shell is an
+          opaque `fixed inset-0 z-[100]` layer, so a body-level portal would
+          render correctly but sit underneath it. Being `fixed` (no transform),
+          the shell is not a containing block for the button, which therefore
+          stays pinned to the viewport as the shell scrolls. */}
       {showFab &&
         createPortal(
           <button
@@ -143,7 +167,7 @@ export function GuestsWorkspace({
             <Plus size={14} strokeWidth={1.5} />
             New family
           </button>,
-          document.body,
+          document.getElementById("admin-shell") ?? document.body,
         )}
     </>
   );

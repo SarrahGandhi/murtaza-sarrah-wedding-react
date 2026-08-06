@@ -14,7 +14,9 @@ create table "guests" (
     id integer primary key generated always as identity,
     name text not null,
     category guest_category not null,
-    family_id integer references "guest_families"(id) on delete set null,
+    -- Restrict, not cascade: emptying a family is a deliberate step the admin
+    -- takes before deleting it, never a side effect of the delete.
+    family_id integer not null references "guest_families"(id) on delete restrict,
     created_at timestamptz not null default now()
 );
 

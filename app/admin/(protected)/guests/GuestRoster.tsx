@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState, type Dispatch, type Ref, type SetStateAction } from "react";
 import type { IFuseOptions } from "fuse.js";
 import { FamilySection } from "./FamilySection";
 import type { GuestCategory, GuestSide } from "@/lib/types";
@@ -33,10 +33,6 @@ export type FamilyWithGuests = {
 
 export type SideFilter = "ALL" | GuestSide;
 
-function guestCountFor(families: FamilyWithGuests[]): number {
-  return families.reduce((total, entry) => total + entry.guests.length, 0);
-}
-
 // A leading "#" means "this exact family id" and bypasses fuzzy matching —
 // otherwise "42" also scores hits on #142, #420 and phone numbers.
 function parseFamilyIdQuery(search: string): number | null {
@@ -60,6 +56,7 @@ export function GuestRoster({
   groomFamilies,
   search,
   onSearchChange,
+  searchRef,
   sideFilter,
   onSideFilterChange,
   openFamilyIds,
@@ -69,14 +66,15 @@ export function GuestRoster({
   groomFamilies: FamilyWithGuests[];
   search: string;
   onSearchChange: (search: string) => void;
+  // The workspace scrolls to this after a "Jump to it", so the filtered-down
+  // search and its lone result land together on small screens.
+  searchRef?: Ref<HTMLLabelElement>;
   sideFilter: SideFilter;
   onSideFilterChange: (filter: SideFilter) => void;
   openFamilyIds: Set<number>;
   onOpenFamilyIdsChange: Dispatch<SetStateAction<Set<number>>>;
 }) {
   const [fuzziness, setFuzziness] = useState(DEFAULT_FUZZINESS);
-  const brideGuestCount = guestCountFor(brideFamilies);
-  const groomGuestCount = guestCountFor(groomFamilies);
 
   const exactId = parseFamilyIdQuery(search);
   const fuzzySearch = exactId === null ? search : "";
@@ -144,36 +142,7 @@ export function GuestRoster({
   return (
     <>
       <div className="mb-10 space-y-5">
-        <div className="grid gap-3 md:grid-cols-2">
-          {[
-            {
-              label: "Bride's side",
-              familyCount: brideFamilies.length,
-              guestCount: brideGuestCount,
-            },
-            {
-              label: "Groom's side",
-              familyCount: groomFamilies.length,
-              guestCount: groomGuestCount,
-            },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-warm-white border border-border/50 px-4 py-3"
-            >
-              <p className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-2">
-                {stat.label}
-              </p>
-              <p className="font-body text-sm text-foreground">
-                <span className="tabular-nums">{stat.familyCount}</span>{" "}
-                {stat.familyCount === 1 ? "family" : "families"} ·{" "}
-                <span className="tabular-nums">{stat.guestCount}</span>{" "}
-                {stat.guestCount === 1 ? "guest" : "guests"}
-              </p>
-            </div>
-          ))}
-        </div>
-        <label className="block">
+        <label ref={searchRef} className="block">
           <span className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-1 block">
             Search families
           </span>

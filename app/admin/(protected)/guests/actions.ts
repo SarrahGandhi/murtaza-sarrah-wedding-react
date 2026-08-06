@@ -179,15 +179,30 @@ export async function deleteFamily(formData: FormData) {
   const id = parseId(formData.get("id"));
   if (id === null) return { error: "Invalid id." };
 
+  // The FK is ON DELETE RESTRICT, so the database blocks this anyway — but
+  // counting first lets us say how many guests are in the way.
+  const { count, error: countError } = await supabase
+    .from("guests")
+    .select("id", { count: "exact", head: true })
+    .eq("family_id", id);
+  if (countError) return { error: countError.message };
+  if (count && count > 0) {
+    return {
+      error: `This family still has ${count} ${count === 1 ? "guest" : "guests"} linked to it. Delete them first.`,
+    };
+  }
+
   const { error } = await supabase
     .from("guest_families")
     .delete()
     .eq("id", id);
   if (error) {
+    // 23503 = foreign key violation: a guest was added between the count above
+    // and this delete.
     return {
       error:
-        error.message.includes("foreign key")
-          ? "This family still has guests linked to it. Move or delete them first."
+        error.code === "23503"
+          ? "This family still has guests linked to it. Delete them first."
           : error.message,
     };
   }

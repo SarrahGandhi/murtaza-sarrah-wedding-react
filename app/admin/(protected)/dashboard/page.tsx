@@ -1,16 +1,9 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { StatusIcon } from "@/app/shared/StatusIcon";
+import type { GuestSide } from "@/lib/types";
 
-async function getCount(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  table: "guests" | "guest_families" | "events"
-) {
-  const { count } = await supabase
-    .from(table)
-    .select("id", { count: "exact", head: true });
-  return count ?? 0;
-}
+type SideTally = { families: number; guests: number };
 
 type EventTally = {
   invited: number;
@@ -21,17 +14,40 @@ type EventTally = {
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const [guests, families, { data: events }, { data: rsvps }] =
-    await Promise.all([
-      getCount(supabase, "guests"),
-      getCount(supabase, "guest_families"),
-      supabase
-        .from("events")
-        .select("id, name, date, time")
-        .order("date", { ascending: true })
-        .order("time", { ascending: true }),
-      supabase.from("event_guests_rsvp").select("event_id, rsvp_status"),
-    ]);
+  // Rows rather than head-only counts: the per-side breakdown needs each
+  // family's side and each guest's family, and a wedding roster is small.
+  const [
+    { data: familyRows },
+    { data: guestRows },
+    { data: events },
+    { data: rsvps },
+  ] = await Promise.all([
+    supabase.from("guest_families").select("id, side"),
+    supabase.from("guests").select("family_id"),
+    supabase
+      .from("events")
+      .select("id, name, date, time")
+      .order("date", { ascending: true })
+      .order("time", { ascending: true }),
+    supabase.from("event_guests_rsvp").select("event_id, rsvp_status"),
+  ]);
+
+  const guests = guestRows?.length ?? 0;
+  const families = familyRows?.length ?? 0;
+
+  const sideOfFamily = new Map<number, GuestSide>();
+  const bySide: Record<GuestSide, SideTally> = {
+    BRIDE: { families: 0, guests: 0 },
+    GROOM: { families: 0, guests: 0 },
+  };
+  for (const f of familyRows ?? []) {
+    sideOfFamily.set(f.id, f.side);
+    bySide[f.side].families += 1;
+  }
+  for (const g of guestRows ?? []) {
+    const side = g.family_id === null ? undefined : sideOfFamily.get(g.family_id);
+    if (side) bySide[side].guests += 1;
+  }
 
   const tallyByEvent = new Map<number, EventTally>();
   for (const r of rsvps ?? []) {
@@ -50,6 +66,10 @@ export default async function DashboardPage() {
       label: "Roster",
       count: guests,
       sub: `${families} ${families === 1 ? "family" : "families"}`,
+      breakdown: [
+        { label: "Bride's side", tally: bySide.BRIDE },
+        { label: "Groom's side", tally: bySide.GROOM },
+      ],
       href: "/admin/guests",
       roman: "I",
     },
@@ -57,6 +77,7 @@ export default async function DashboardPage() {
       label: "Events",
       count: events?.length ?? 0,
       sub: null,
+      breakdown: null,
       href: "/admin/events",
       roman: "II",
     },
@@ -104,6 +125,24 @@ export default async function DashboardPage() {
                 Manage &rarr;
               </span>
             </div>
+            {card.breakdown && (
+              <dl className="mt-auto border-t border-border/40 pt-4 flex flex-col gap-2">
+                {card.breakdown.map((row) => (
+                  <div
+                    key={row.label}
+                    className="flex items-baseline justify-between gap-4 text-[10px] tracking-[0.25em] uppercase font-body"
+                  >
+                    <dt className="text-text-secondary">{row.label}</dt>
+                    <dd className="text-muted tabular-nums">
+                      {row.tally.families}{" "}
+                      {row.tally.families === 1 ? "family" : "families"} ·{" "}
+                      {row.tally.guests}{" "}
+                      {row.tally.guests === 1 ? "guest" : "guests"}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
           </Link>
         ))}
       </div>

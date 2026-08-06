@@ -1,6 +1,7 @@
 import type {
   InputHTMLAttributes,
   ReactNode,
+  Ref,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
@@ -51,7 +52,9 @@ type CommonFieldProps = {
 };
 
 type FormFieldProps = CommonFieldProps &
-  Omit<InputHTMLAttributes<HTMLInputElement>, "size">;
+  Omit<InputHTMLAttributes<HTMLInputElement>, "size"> & {
+    ref?: Ref<HTMLInputElement>;
+  };
 
 export function FormField({
   label,
@@ -74,6 +77,7 @@ export function FormField({
 type SelectFieldProps = CommonFieldProps &
   Omit<SelectHTMLAttributes<HTMLSelectElement>, "size"> & {
     children: ReactNode;
+    ref?: Ref<HTMLSelectElement>;
   };
 
 export function SelectField({

@@ -1,67 +1,212 @@
 "use client";
 
-import { useRef, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { createFamily } from "./actions";
 import { FormField, SelectField } from "@/app/shared/FormField";
 import { Button } from "@/app/shared/Button";
+import { ErrorMessage } from "@/app/shared/ErrorMessage";
+import type { GuestCategory, GuestSide } from "@/lib/types";
 
-export function AddFamilyForm() {
-  const formRef = useRef<HTMLFormElement>(null);
+export type CreatedFamily = { id: number; label: string; side: GuestSide };
+
+type GuestRow = { key: number; name: string; category: GuestCategory };
+
+let nextRowKey = 0;
+function blankRow(): GuestRow {
+  return { key: nextRowKey++, name: "", category: "FEMALE" };
+}
+
+export function AddFamilyForm({
+  open,
+  onCreated,
+  focusNonce,
+}: {
+  open: boolean;
+  onCreated: (family: CreatedFamily) => void;
+  focusNonce: number;
+}) {
+  const firstFieldRef = useRef<HTMLSelectElement>(null);
+  const [side, setSide] = useState<GuestSide>("BRIDE");
+  const [emails, setEmails] = useState("");
+  const [phone, setPhone] = useState("");
+  const [rows, setRows] = useState<GuestRow[]>(() => [blankRow()]);
+  const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function scrollToNewFamily(existingIds: Set<string | undefined>) {
-    const observer = new MutationObserver(() => {
-      const allFamilies = document.querySelectorAll<HTMLElement>("[data-family-id]");
-      const newFamily = Array.from(allFamilies).find(
-        (el) => !existingIds.has(el.dataset.familyId),
-      );
-      if (newFamily) {
-        observer.disconnect();
-        newFamily.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    setTimeout(() => observer.disconnect(), 5000);
+  // Bumped by the floating button so it can open the form and land the caret.
+  useEffect(() => {
+    if (focusNonce > 0) firstFieldRef.current?.focus({ preventScroll: true });
+  }, [focusNonce]);
+
+  function updateRow(key: number, patch: Partial<GuestRow>) {
+    setRows((current) =>
+      current.map((row) => (row.key === key ? { ...row, ...patch } : row)),
+    );
+  }
+
+  function removeRow(key: number) {
+    setRows((current) =>
+      current.length === 1 ? [blankRow()] : current.filter((r) => r.key !== key),
+    );
   }
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const existingIds = new Set(
-      Array.from(document.querySelectorAll<HTMLElement>("[data-family-id]")).map(
-        (el) => el.dataset.familyId,
-      ),
-    );
+    setError(null);
     startTransition(async () => {
-      await createFamily(formData);
-      formRef.current?.reset();
-      scrollToNewFamily(existingIds);
+      const result = await createFamily(formData);
+      if (!result.success) {
+        setError(result.error);
+        return;
+      }
+      onCreated({ id: result.id, label: result.label, side: result.side });
+      // `side` intentionally persists — families are usually entered in batches
+      // for one side at a time.
+      setEmails("");
+      setPhone("");
+      setRows([blankRow()]);
+      firstFieldRef.current?.focus({ preventScroll: true });
     });
   }
 
   return (
-    <form
-      ref={formRef}
-      onSubmit={onSubmit}
-      className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_auto] gap-3"
-    >
-      <FormField
-        label="Emails (optional)"
-        name="emails"
-        placeholder="alice@example.com, bob@example.com"
-      />
-      <SelectField label="Side" name="side" defaultValue="BRIDE">
-        <option value="BRIDE">Bride</option>
-        <option value="GROOM">Groom</option>
-      </SelectField>
-      <FormField
-        label="Phone (optional)"
-        name="phone"
-        placeholder="+1 555 0100"
-      />
-      <Button type="submit" pending={pending}>
-        {pending ? "..." : "Add family"}
-      </Button>
-    </form>
+    <div className={open ? "" : "hidden"}>
+      <form onSubmit={onSubmit} className={pending ? "opacity-60" : ""}>
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr] gap-3">
+          <SelectField
+            label="Side"
+            name="side"
+            value={side}
+            onChange={(e) => setSide(e.target.value as GuestSide)}
+            ref={firstFieldRef}
+          >
+            <option value="BRIDE">Bride</option>
+            <option value="GROOM">Groom</option>
+          </SelectField>
+          <FormField
+            label="Phone (optional)"
+            name="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="+1 555 0100"
+          />
+          <FormField
+            label="Emails (optional)"
+            name="emails"
+            value={emails}
+            onChange={(e) => setEmails(e.target.value)}
+            placeholder="alice@example.com, bob@example.com"
+          />
+        </div>
+
+        <div className="mt-6">
+          <p className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-3">
+            Guests in this family
+          </p>
+          <div className="space-y-3">
+            {rows.map((row, index) => (
+              <div
+                key={row.key}
+                className="grid grid-cols-1 md:grid-cols-[2fr_1fr_auto] gap-3 items-end"
+              >
+                <FormField
+                  label={`Guest ${index + 1} · Name`}
+                  name="guest_name"
+                  value={row.name}
+                  onChange={(e) => updateRow(row.key, { name: e.target.value })}
+                  placeholder="Full name"
+                  labelTone="muted"
+                />
+                <SelectField
+                  label="Category"
+                  name="guest_category"
+                  value={row.category}
+                  onChange={(e) =>
+                    updateRow(row.key, {
+                      category: e.target.value as GuestCategory,
+                    })
+                  }
+                  labelTone="muted"
+                >
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                  <option value="CHILD">Child</option>
+                </SelectField>
+                <Button
+                  variant="ghost"
+                  onClick={() => removeRow(row.key)}
+                  aria-label={`Remove guest ${index + 1}`}
+                  className="pb-2"
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3">
+            <Button
+              variant="secondary"
+              onClick={() => setRows((current) => [...current, blankRow()])}
+            >
+              + Add another guest
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center gap-4">
+          <Button type="submit" pending={pending}>
+            {pending ? "…" : "Create family"}
+          </Button>
+          <span className="text-xs text-muted italic font-body">
+            Blank guest rows are ignored — a family with none is fine.
+          </span>
+        </div>
+
+        {error && (
+          <ErrorMessage variant="inline" className="mt-3">
+            {error}
+          </ErrorMessage>
+        )}
+      </form>
+    </div>
+  );
+}
+
+// Kept next to the form since it only makes sense alongside it.
+export function CreatedFamilyLinks({
+  created,
+  onJump,
+}: {
+  created: CreatedFamily[];
+  onJump: (id: number) => void;
+}) {
+  if (created.length === 0) return null;
+  return (
+    <div className="mt-6 pt-5 border-t border-border/40">
+      <p className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-3">
+        Created this session
+      </p>
+      <ul className="space-y-2">
+        {created.map((family) => (
+          <li key={family.id} className="flex items-baseline gap-3 flex-wrap">
+            <span className="text-accent font-body text-sm">✓</span>
+            <button
+              type="button"
+              onClick={() => onJump(family.id)}
+              className="font-body text-sm text-foreground hover:text-accent underline underline-offset-4 decoration-border transition-colors cursor-pointer text-left"
+            >
+              {family.label}
+            </button>
+            <span className="text-[10px] tracking-[0.3em] uppercase text-muted font-body">
+              {family.side === "BRIDE" ? "Bride's side" : "Groom's side"}
+            </span>
+            <span className="text-[10px] tracking-[0.3em] uppercase text-muted font-body tabular-nums">
+              #{family.id}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

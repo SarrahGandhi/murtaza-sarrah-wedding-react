@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import type { IFuseOptions } from "fuse.js";
 import { FamilySection } from "./FamilySection";
 import type { GuestCategory, GuestSide } from "@/lib/types";
@@ -25,16 +25,23 @@ type Guest = {
   family_id: number;
 };
 
-type FamilyWithGuests = {
+export type FamilyWithGuests = {
   family: Family;
   guests: Guest[];
   label: string;
 };
 
-type SideFilter = "ALL" | GuestSide;
+export type SideFilter = "ALL" | GuestSide;
 
 function guestCountFor(families: FamilyWithGuests[]): number {
   return families.reduce((total, entry) => total + entry.guests.length, 0);
+}
+
+// A leading "#" means "this exact family id" and bypasses fuzzy matching —
+// otherwise "42" also scores hits on #142, #420 and phone numbers.
+function parseFamilyIdQuery(search: string): number | null {
+  const match = search.trim().match(/^#(\d+)$/);
+  return match ? Number(match[1]) : null;
 }
 
 const searchOptions: IFuseOptions<FamilyWithGuests> = {
@@ -51,29 +58,50 @@ const searchOptions: IFuseOptions<FamilyWithGuests> = {
 export function GuestRoster({
   brideFamilies,
   groomFamilies,
+  search,
+  onSearchChange,
+  sideFilter,
+  onSideFilterChange,
+  openFamilyIds,
+  onOpenFamilyIdsChange,
 }: {
   brideFamilies: FamilyWithGuests[];
   groomFamilies: FamilyWithGuests[];
+  search: string;
+  onSearchChange: (search: string) => void;
+  sideFilter: SideFilter;
+  onSideFilterChange: (filter: SideFilter) => void;
+  openFamilyIds: Set<number>;
+  onOpenFamilyIdsChange: Dispatch<SetStateAction<Set<number>>>;
 }) {
-  const [search, setSearch] = useState("");
   const [fuzziness, setFuzziness] = useState(DEFAULT_FUZZINESS);
-  const [sideFilter, setSideFilter] = useState<SideFilter>("ALL");
-  const [openFamilyIds, setOpenFamilyIds] = useState<Set<number>>(new Set());
   const brideGuestCount = guestCountFor(brideFamilies);
   const groomGuestCount = guestCountFor(groomFamilies);
 
-  const filteredBride = useFuzzyFilter(
+  const exactId = parseFamilyIdQuery(search);
+  const fuzzySearch = exactId === null ? search : "";
+
+  const fuzzyBride = useFuzzyFilter(
     brideFamilies,
-    search,
+    fuzzySearch,
     searchOptions,
     fuzziness,
   );
-  const filteredGroom = useFuzzyFilter(
+  const fuzzyGroom = useFuzzyFilter(
     groomFamilies,
-    search,
+    fuzzySearch,
     searchOptions,
     fuzziness,
   );
+  const filteredBride =
+    exactId === null
+      ? fuzzyBride
+      : brideFamilies.filter((f) => f.family.id === exactId);
+  const filteredGroom =
+    exactId === null
+      ? fuzzyGroom
+      : groomFamilies.filter((f) => f.family.id === exactId);
+
   const visibleBride = sideFilter === "GROOM" ? [] : filteredBride;
   const visibleGroom = sideFilter === "BRIDE" ? [] : filteredGroom;
   const visibleFamilies = [...visibleBride, ...visibleGroom];
@@ -86,7 +114,7 @@ export function GuestRoster({
     (Boolean(search) || brideFamilies.length > 0 || groomFamilies.length > 0);
 
   function setFamilyExpanded(familyId: number, expanded: boolean) {
-    setOpenFamilyIds((current) => {
+    onOpenFamilyIdsChange((current) => {
       const next = new Set(current);
       if (expanded) {
         next.add(familyId);
@@ -98,7 +126,7 @@ export function GuestRoster({
   }
 
   function toggleAllVisibleFamilies() {
-    setOpenFamilyIds((current) => {
+    onOpenFamilyIdsChange((current) => {
       const next = new Set(current);
       if (allVisibleOpen) {
         for (const entry of visibleFamilies) {
@@ -152,12 +180,24 @@ export function GuestRoster({
           <input
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Name, email, phone, or family #…"
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder="Name, email, phone, or #42 for an exact family…"
             className="w-full max-w-md bg-warm-white border border-border/60 px-4 py-2.5 font-body text-sm focus:outline-none focus:border-accent/60 transition-colors placeholder:text-muted/60"
           />
         </label>
-        <FuzzinessControl value={fuzziness} onChange={setFuzziness} />
+        {exactId === null ? (
+          <FuzzinessControl value={fuzziness} onChange={setFuzziness} />
+        ) : (
+          <p className="flex items-center gap-3 text-[10px] tracking-[0.25em] uppercase font-body text-text-secondary">
+            <span>
+              Exact match · family{" "}
+              <span className="tabular-nums text-accent">#{exactId}</span>
+            </span>
+            <Button variant="ghost" onClick={() => onSearchChange("")}>
+              Clear
+            </Button>
+          </p>
+        )}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-2">
@@ -172,7 +212,7 @@ export function GuestRoster({
                 <Button
                   key={value}
                   variant={sideFilter === value ? "primary" : "secondary"}
-                  onClick={() => setSideFilter(value as SideFilter)}
+                  onClick={() => onSideFilterChange(value as SideFilter)}
                 >
                   {label}
                 </Button>
@@ -193,10 +233,10 @@ export function GuestRoster({
 
       {noResults ? (
         <p className="text-sm text-muted italic font-body">
-          {search ? (
-            <>
-              No families match &ldquo;{search}&rdquo;
-            </>
+          {exactId !== null ? (
+            <>No family with id #{exactId}</>
+          ) : search ? (
+            <>No families match &ldquo;{search}&rdquo;</>
           ) : (
             "No families match this side filter"
           )}

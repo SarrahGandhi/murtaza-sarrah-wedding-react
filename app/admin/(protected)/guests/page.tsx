@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import { AddFamilyForm } from "./AddFamilyForm";
-import { GuestRoster } from "./GuestRoster";
+import { GuestsWorkspace } from "./GuestsWorkspace";
+import { familyLabel } from "./family-label";
 import type { GuestCategory } from "@/lib/types";
 import { PageHeader } from "@/app/shared/PageHeader";
 
@@ -12,11 +12,10 @@ type Guest = {
 };
 
 function familyLabelFromGuests(guests: Guest[], familyId: number): string {
-  if (guests.length === 0) return `Empty family · #${familyId}`;
-  return guests
-    .sort((a, b) => a.id - b.id)
-    .map((g) => g.name)
-    .join(", ");
+  return familyLabel(
+    [...guests].sort((a, b) => a.id - b.id).map((g) => g.name),
+    familyId,
+  );
 }
 
 export default async function GuestsPage() {
@@ -67,28 +66,10 @@ export default async function GuestsPage() {
         }
       />
 
-      <section className="mb-12 border-t border-b border-border/40 py-6">
-        <p className="text-[10px] tracking-[0.3em] uppercase text-text-secondary font-body mb-2">
-          New family
-        </p>
-        <p className="text-xs text-text-secondary font-body italic mb-4 leading-relaxed">
-          Create the family first; add its guests inside the section that
-          appears below. Emails are optional — guests can fill them in
-          themselves later.
-        </p>
-        <AddFamilyForm />
-      </section>
-
-      {!families || families.length === 0 ? (
-        <p className="text-sm text-text-secondary font-body italic">
-          No families yet — start by adding one above.
-        </p>
-      ) : (
-        <GuestRoster
-          brideFamilies={brideFamilies}
-          groomFamilies={groomFamilies}
-        />
-      )}
+      <GuestsWorkspace
+        brideFamilies={brideFamilies}
+        groomFamilies={groomFamilies}
+      />
     </div>
   );
 }

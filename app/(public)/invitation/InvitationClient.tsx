@@ -229,7 +229,7 @@ function EmailCard({
           }}
           onKeyDown={(e) => e.key === "Enter" && handleAdd()}
           placeholder="email@example.com"
-          className="flex-1 min-w-0 rounded-full bg-white/70 border border-white/80 px-5 py-3 text-sm font-body text-foreground placeholder:text-muted focus:outline-none focus:border-bluebell/50 transition-colors"
+          className="flex-1 min-w-0 rounded-full bg-white/70 border border-white/80 px-5 py-3 text-base sm:text-sm font-body text-foreground placeholder:text-muted focus:outline-none focus:border-bluebell/50 transition-colors"
         />
         <button
           onClick={handleAdd}

@@ -178,7 +178,7 @@ export function RsvpRoster({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Type a guest or family name…"
-            className="w-full max-w-md bg-warm-white border border-border/60 px-4 py-2.5 font-body text-sm focus:outline-none focus:border-accent/60 transition-colors placeholder:text-muted/60"
+            className="w-full max-w-md bg-warm-white border border-border/60 px-4 py-2.5 font-body text-base sm:text-sm focus:outline-none focus:border-accent/60 transition-colors placeholder:text-muted/60"
           />
         </label>
         <FuzzinessControl value={fuzziness} onChange={setFuzziness} />

@@ -12,8 +12,10 @@ const LABEL_TONE = {
 } as const;
 
 const FIELD_INPUT = {
-  sm: "mt-1 w-full bg-warm-white border border-border/60 px-3 py-2 font-body text-sm focus:outline-none focus:border-accent/60 transition-colors disabled:opacity-60",
-  lg: "mt-2 w-full bg-warm-white border border-border/60 px-4 py-3 font-body text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent/60 transition-colors disabled:opacity-60",
+  // text-base below the sm breakpoint: iOS Safari auto-zooms on focus when a
+  // control's font-size is under 16px, so phones must never render these at 14px.
+  sm: "mt-1 w-full bg-warm-white border border-border/60 px-3 py-2 font-body text-base sm:text-sm focus:outline-none focus:border-accent/60 transition-colors disabled:opacity-60",
+  lg: "mt-2 w-full bg-warm-white border border-border/60 px-4 py-3 font-body text-base sm:text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-accent/60 transition-colors disabled:opacity-60",
 } as const;
 
 type Size = keyof typeof FIELD_INPUT;

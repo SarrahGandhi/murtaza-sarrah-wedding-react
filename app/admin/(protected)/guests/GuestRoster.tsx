@@ -151,7 +151,7 @@ export function GuestRoster({
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Name, email, phone, or #42 for an exact family…"
-            className="w-full max-w-md bg-warm-white border border-border/60 px-4 py-2.5 font-body text-sm focus:outline-none focus:border-accent/60 transition-colors placeholder:text-muted/60"
+            className="w-full max-w-md bg-warm-white border border-border/60 px-4 py-2.5 font-body text-base sm:text-sm focus:outline-none focus:border-accent/60 transition-colors placeholder:text-muted/60"
           />
         </label>
         {exactId === null ? (

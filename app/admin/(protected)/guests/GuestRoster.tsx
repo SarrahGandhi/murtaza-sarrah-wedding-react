@@ -16,6 +16,10 @@ type Family = {
   side: GuestSide;
   email: string[];
   phone: string | null;
+  family_name: string | null;
+  male_guest_slots: number;
+  female_guest_slots: number;
+  allow_all_guests: boolean;
 };
 
 type Guest = {
@@ -23,6 +27,7 @@ type Guest = {
   name: string;
   category: GuestCategory;
   family_id: number;
+  added_by_family: boolean;
 };
 
 export type FamilyWithGuests = {
